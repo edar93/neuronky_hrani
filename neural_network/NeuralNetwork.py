@@ -1,6 +1,7 @@
 # generate random floating point values
-from random import seed
 from random import random
+from random import randrange
+
 import math
 
 #[layer] layer = [neuronSynapses] neuronSynapses = [synapsValues]
@@ -52,11 +53,19 @@ class NeuralNetwork:
 
         return networkClone    
 
-    def mutate(self, koeficient):
-        for i in range(len(self.synaps)):
-            for j in range(len(self.synaps[i])):
-                for k in range(len(self.synaps[i][j])):
-                    self.synaps[i][j][k] = self.mutateValue(self.synaps[i][j][k], koeficient)
+    def mutate(self, koeficient, mutaleLayerOnlyOneLayer = True):
+        if (not mutaleLayerOnlyOneLayer):
+            for i in range(len(self.synaps)):
+                for j in range(len(self.synaps[i])):
+                    for k in range(len(self.synaps[i][j])):
+                        self.synaps[i][j][k] = self.mutateValue(self.synaps[i][j][k], koeficient)
+
+        else:
+            #changeLayer replace i
+            changeLayer = randrange(0, len(self.synaps))
+            for j in range(len(self.synaps[changeLayer])):
+                for k in range(len(self.synaps[changeLayer][j])):
+                    self.synaps[changeLayer][j][k] = self.mutateValue(self.synaps[changeLayer][j][k], koeficient)
 
 
     def sigmoid(self, x):
@@ -94,6 +103,7 @@ class NeuralNetwork:
             synaps.append(random())
 
         return synaps
+
 '''
 print("----")
 print("----")

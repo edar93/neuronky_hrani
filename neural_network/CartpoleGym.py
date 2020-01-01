@@ -2,16 +2,15 @@ import gym
 
 class CartPoleGym:
 
-    #def __init__(self):
-    #    self.env = gym.make('CartPole-v0')
+    def __init__(self):
+        self.env = gym.make('CartPole-v0')
 
-    #def __del__(self):
-    #   self.env.close()
-
-    # logActions = False
+    def close(self):
+        self.env.close()
 
     def play(self, network, maxRounds = 1000, logActions = False):
-        env = gym.make('CartPole-v0')
+        #env = gym.make('CartPole-v1')
+        env = self.env
         observation = env.reset()
         totalReward = 0
         actionsLog = 'actions on 1st in generation: '
@@ -31,7 +30,7 @@ class CartPoleGym:
         if (logActions):
             print(actionsLog)
 
-        env.close()
+        #env.close()
         return totalReward
         
         
