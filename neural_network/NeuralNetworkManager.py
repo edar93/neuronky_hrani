@@ -83,5 +83,5 @@ class NeuralNetworkManager:
 
 
 neuralNetworkManager = NeuralNetworkManager()
-neuralNetworkManager.createNeuralNetworkPool(4 ,2 ,[6, 4] , 200)
-neuralNetworkManager.startEvolution(100, [6,3,2], 0.005)
+neuralNetworkManager.createNeuralNetworkPool(4 ,2 ,[8] , 300)
+neuralNetworkManager.startEvolution(100, [8 ,3 ,2 , 0, 0, 0], 0.005)

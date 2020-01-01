@@ -3,7 +3,7 @@ import gym
 class CartPoleGym:
 
     def __init__(self):
-        self.env = gym.make('CartPole-v0')
+        self.env = gym.make('CartPole-v1')
 
     def close(self):
         self.env.close()
