@@ -22,6 +22,8 @@ class NeuralNetworkManager:
     def play(self):
         for i in range(len(self.networkPool)):
             returnValue = self.cartPoleGym.play(self.networkPool[i]["network"], 1000)
+            #todo loop
+            returnValue += self.cartPoleGym.play(self.networkPool[i]["network"], 1000)
             self.networkPool[i]["score"] = returnValue
 
         self._printScoresReport()
@@ -50,9 +52,19 @@ class NeuralNetworkManager:
         self.networkPool = nextGen
 
     def startEvolution(self, maxGenerations, survivals, mutationCoeficient):
+        print('evolution started')
         for i in range(maxGenerations):
             self.play()
             self.evolve(survivals, mutationCoeficient)
+
+            #if (i % 10 == 0):
+            #   print('layers')
+            #   firstNetwork = self.networkPool[0]['network']
+            #   for j in range(len(firstNetwork.synaps)):
+            #       print('layer', j)
+            #       for k in firstNetwork.synaps[j]:
+            #            print(k)            
+
 
         self.cartPoleGym.close()
 
@@ -83,5 +95,5 @@ class NeuralNetworkManager:
 
 
 neuralNetworkManager = NeuralNetworkManager()
-neuralNetworkManager.createNeuralNetworkPool(4 ,2 ,[8] , 300)
-neuralNetworkManager.startEvolution(100, [8 ,3 ,2 , 0, 0, 0], 0.005)
+neuralNetworkManager.createNeuralNetworkPool(4 ,2 ,[8] , 170)
+neuralNetworkManager.startEvolution(1100, [5 ,4 ,3 , 2, 0, 0, 0], 0.0005)

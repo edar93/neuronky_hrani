@@ -41,8 +41,8 @@ class NeuralNetwork:
 
     def clone(self):
         networkClone = NeuralNetwork(self.inputs, self.outputs)
-        networkClone.neuronsPerLayer = self.neuronsPerLayer
-        networkClone.layers = self.layers
+        networkClone.neuronsPerLayer = self.neuronsPerLayer.copy()
+        networkClone.layers = self.layers.copy()
 
         networkClone.synaps = self.synaps.copy()
         for i in range(len(self.synaps)):
@@ -53,7 +53,7 @@ class NeuralNetwork:
 
         return networkClone    
 
-    def mutate(self, koeficient, mutaleLayerOnlyOneLayer = True):
+    def mutate(self, koeficient, mutaleLayerOnlyOneLayer = False):
         if (not mutaleLayerOnlyOneLayer):
             for i in range(len(self.synaps)):
                 for j in range(len(self.synaps[i])):
