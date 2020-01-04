@@ -1,10 +1,17 @@
 from NeuralNetwork import NeuralNetwork
 from CartpoleGym import CartPoleGym
+from MountainCarGym import MountainCarGym
 
 class NeuralNetworkManager:
     
-    def __init__(self):
-        self.cartPoleGym = CartPoleGym()
+    def __init__(self, game):
+        if (game == 'CartPole'):
+            self.gym = CartPoleGym()
+        elif (game == 'MountainCar'):
+            self.gym = MountainCarGym()
+        else:
+            raise Exception('incorect gym set')    
+
 
     def createNeuralNetworkPool(self, inputs, outpust, layers, count):
         self.networkPool = []
@@ -21,9 +28,9 @@ class NeuralNetworkManager:
 
     def play(self):
         for i in range(len(self.networkPool)):
-            returnValue = self.cartPoleGym.play(self.networkPool[i]["network"], 1000)
+            returnValue = self.gym.play(self.networkPool[i]["network"], 1000)
             #todo loop
-            returnValue += self.cartPoleGym.play(self.networkPool[i]["network"], 1000)
+            returnValue += self.gym.play(self.networkPool[i]["network"], 1000)
             self.networkPool[i]["score"] = returnValue
 
         self._printScoresReport()
@@ -66,7 +73,7 @@ class NeuralNetworkManager:
             #            print(k)            
 
 
-        self.cartPoleGym.close()
+        self.gym.close()
 
     def _printScoresReport(self):
         self.networkPool.sort(key = self._sortMethod, reverse=True)
@@ -75,16 +82,22 @@ class NeuralNetworkManager:
         average = 0
 
         for i in range(len(self.networkPool)):
-            if(self.networkPool[i]["score"] == None):
+            score = self.networkPool[i]["score"]
+            isFloatScore = score % 1 != 0
+            if(score == None):
                 print('missing score')
                 return
 
-            average += float(self.networkPool[i]["score"])
-            scoresText += " " + str(int(self.networkPool[i]["score"])) + ","
+            average += float(score)
+            scoresText += " " + str(float(score) if isFloatScore else int(score)) + ","
 
         average /= len(self.networkPool)
         averageText = " had average score is " + str(average) + " "
-        print(generationText + averageText+ scoresText)
+        if (isFloatScore):
+            print(generationText + averageText)
+            print(scoresText)
+        else :
+            print(generationText + averageText + scoresText)
 
 
     def _sortMethod(self, e):
@@ -94,6 +107,10 @@ class NeuralNetworkManager:
         return e['score']
 
 
-neuralNetworkManager = NeuralNetworkManager()
-neuralNetworkManager.createNeuralNetworkPool(4 ,2 ,[8] , 170)
-neuralNetworkManager.startEvolution(1100, [5 ,4 ,3 , 2, 0, 0, 0], 0.0005)
+neuralNetworkManager = NeuralNetworkManager('MountainCar')
+neuralNetworkManager.createNeuralNetworkPool(2 ,3 ,[6, 4] , 35)
+neuralNetworkManager.startEvolution(1100, [4, 2, 1, 0], 0.002)
+
+#neuralNetworkManager = NeuralNetworkManager('CartPole')
+#neuralNetworkManager.createNeuralNetworkPool(4 ,2 ,[8] , 170)
+#neuralNetworkManager.startEvolution(1100, [5 ,4 ,3 , 2, 0, 0, 0], 0.0005)

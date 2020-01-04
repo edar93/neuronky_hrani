@@ -103,18 +103,3 @@ class NeuralNetwork:
             synaps.append(random())
 
         return synaps
-
-'''
-print("----")
-print("----")
-
-
-neuralNetwork = NeuralNetwork(2,2)
-neuralNetwork.createRandomNetwork([1])
-print("synaps", neuralNetwork.synaps)
-print("evaluate", neuralNetwork.evaluateInputs([0.01, 0.99]))
-print("evalToGetMax", neuralNetwork.evalToGetMax([0.01, 0.99]))
-
-print("clone", neuralNetwork.clone().synaps)
-print("mutate", neuralNetwork.mutate(0.2))
-'''

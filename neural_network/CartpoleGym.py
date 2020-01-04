@@ -30,7 +30,6 @@ class CartPoleGym:
         if (logActions):
             print(actionsLog)
 
-        #env.close()
         return totalReward
         
         
