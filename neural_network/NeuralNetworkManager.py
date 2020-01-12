@@ -4,14 +4,31 @@ from MountainCarGym import MountainCarGym
 
 class NeuralNetworkManager:
     
-    def __init__(self, game):
-        if (game == 'CartPole'):
+    def __init__(self, configuration):
+
+        self.configuration = configuration
+        if (configuration['gym'] == 'CartPole'):
             self.gym = CartPoleGym()
-        elif (game == 'MountainCar'):
+        elif (configuration['gym'] == 'MountainCar'):
             self.gym = MountainCarGym()
         else:
             raise Exception('incorect gym set')    
 
+    def start(self):
+        configuration = self.configuration
+        neuralNetworkManager.createNeuralNetworkPool(
+            configuration['inputs'],
+            configuration['outputs'],
+            configuration['layers'],
+            configuration['firstGenerationNetworkCount']
+        )
+
+        neuralNetworkManager.startEvolution(
+            configuration['rounds'],
+            configuration['childs'],
+            configuration['mutationCoeficient'],
+            configuration['renderInterval']
+        )
 
     def createNeuralNetworkPool(self, inputs, outpust, layers, count):
         self.networkPool = []
@@ -121,10 +138,30 @@ class NeuralNetworkManager:
         return e['score']
 
 
-#neuralNetworkManager = NeuralNetworkManager('MountainCar')
-#neuralNetworkManager.createNeuralNetworkPool(2 ,3 ,[10, 6] , 250)
-#neuralNetworkManager.startEvolution(1100, [5, 2, 1, 0, 0], [0.00012, 0.00005], 10)
+configurationMountainCar = dict(
+    gym = 'MountainCar',
+    inputs = 2,
+    outputs = 3,
+    layers = [10, 6],
+    firstGenerationNetworkCount = 250,
+    rounds = 1100,
+    childs = [5, 2, 1, 0, 0],
+    mutationCoeficient = [0.00012, 0.00005],
+    renderInterval = 10
+)
 
-neuralNetworkManager = NeuralNetworkManager('CartPole')
-neuralNetworkManager.createNeuralNetworkPool(4 ,2 , [8, 4] , 1700)
-neuralNetworkManager.startEvolution(1100, [3 ,2 ,2 , 1, 0, 0, 0], [0.0007, 0.0002], 10)
+configurationCartPole = dict(
+    gym = 'CartPole',
+    inputs = 4,
+    outputs = 2,
+    layers = [8],
+    firstGenerationNetworkCount = 1000,
+    rounds = 1100,
+    childs = [3 ,2 ,2 , 1, 0, 0, 0],
+    mutationCoeficient = [0.0007, 0.0002],
+    renderInterval = 10
+)
+
+#neuralNetworkManager = NeuralNetworkManager(configurationMountainCar)
+neuralNetworkManager = NeuralNetworkManager(configurationCartPole)
+neuralNetworkManager.start()
