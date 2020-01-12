@@ -53,8 +53,16 @@ class NeuralNetworkManager:
         # create childs
         for i in range(len(survivals)):
             for j in range(survivals[i]):
+                #small mulation
                 child = nextGen[i]['network'].clone()
-                child.mutate(mutationCoeficient)
+                child.mutate(mutationCoeficient[0])
+                nextGen.append({
+                    "network": child,
+                    "score": None
+                })
+                #big mulation
+                child = nextGen[i]['network'].clone()
+                child.mutate(mutationCoeficient[1])
                 nextGen.append({
                     "network": child,
                     "score": None
@@ -115,8 +123,8 @@ class NeuralNetworkManager:
 
 #neuralNetworkManager = NeuralNetworkManager('MountainCar')
 #neuralNetworkManager.createNeuralNetworkPool(2 ,3 ,[10, 6] , 250)
-#neuralNetworkManager.startEvolution(1100, [5, 2, 1, 0, 0], 0.0005)
+#neuralNetworkManager.startEvolution(1100, [5, 2, 1, 0, 0], [0.00012, 0.00005], 10)
 
 neuralNetworkManager = NeuralNetworkManager('CartPole')
-neuralNetworkManager.createNeuralNetworkPool(4 ,2 , [8] , 170)
-neuralNetworkManager.startEvolution(1100, [5 ,4 ,3 , 2, 0, 0, 0], 0.002, 10)
+neuralNetworkManager.createNeuralNetworkPool(4 ,2 , [8, 4] , 1700)
+neuralNetworkManager.startEvolution(1100, [3 ,2 ,2 , 1, 0, 0, 0], [0.0007, 0.0002], 10)
