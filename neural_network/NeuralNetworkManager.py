@@ -27,7 +27,8 @@ class NeuralNetworkManager:
             configuration['rounds'],
             configuration['childs'],
             configuration['mutationCoeficient'],
-            configuration['renderInterval']
+            configuration['renderInterval'],
+            configuration['gamesInOneRound']
         )
 
     def createNeuralNetworkPool(self, inputs, outpust, layers, count):
@@ -39,19 +40,19 @@ class NeuralNetworkManager:
             newNetwork.createRandomNetwork(layers)
             network = {
                 "network": newNetwork,
-                "score": None
+                "score": None,
+                "generation": self.generation
             }
             self.networkPool.append(network)
 
-    def play(self, renderInterval = 1):
+    def play(self, renderInterval = 1, gamesInOneRound = 1):
         for i in range(len(self.networkPool)):
             renderFirst = self.generation % renderInterval == 0 and i == 0
 
             returnValue = self.gym.play(self.networkPool[i]["network"], 1000, renderFirst)
-            #todo loop
-            returnValue += self.gym.play(self.networkPool[i]["network"], 1000)
-            returnValue += self.gym.play(self.networkPool[i]["network"], 1000)
-            returnValue += self.gym.play(self.networkPool[i]["network"], 1000)
+            for j in range(gamesInOneRound - 1):
+                returnValue += self.gym.play(self.networkPool[i]["network"], 1000)
+
             self.networkPool[i]["score"] = returnValue
 
         self._printScoresReport()
@@ -75,40 +76,36 @@ class NeuralNetworkManager:
                 child.mutate(mutationCoeficient[0])
                 nextGen.append({
                     "network": child,
-                    "score": None
+                    "score": None,
+                    "generation": self.generation
                 })
                 #big mulation
                 child = nextGen[i]['network'].clone()
                 child.mutate(mutationCoeficient[1])
                 nextGen.append({
                     "network": child,
-                    "score": None
+                    "score": None,
+                    "generation": self.generation
                 })
 
         self.networkPool = nextGen
 
-    def startEvolution(self, maxGenerations, survivals, mutationCoeficient, renderInterval):
+    def startEvolution(self, maxGenerations, survivals, mutationCoeficient, renderInterval, gamesInOneRound):
         print('evolution started')
         for i in range(maxGenerations):
-            self.play(renderInterval)
-            self.evolve(survivals, mutationCoeficient)
-
-            #if (i % 10 == 0):
-            #   print('layers')
-            #   firstNetwork = self.networkPool[0]['network']
-            #   for j in range(len(firstNetwork.synaps)):
-            #       print('layer', j)
-            #       for k in firstNetwork.synaps[j]:
-            #            print(k)            
+            self.play(renderInterval, gamesInOneRound)
+            self.evolve(survivals, mutationCoeficient)   
 
 
         self.gym.close()
 
     def _printScoresReport(self, logTopResults = 4, oneLineReport = True):
         self.networkPool.sort(key = self._sortMethod, reverse=True)
-        generationText = "generation " + str(self.generation)
-        scoresText = " scores was:"
+        champinGeneration = self.networkPool[0]["generation"]
+        generationText = "generation " + str(self.generation) + "."
+        scoresText = "Scores was:"
         average = 0
+
 
         for i in range(len(self.networkPool)):
             score = self.networkPool[i]["score"]
@@ -122,12 +119,15 @@ class NeuralNetworkManager:
                 scoresText += " " + str(float(score) if isFloatScore else int(score)) + ","
 
         average /= len(self.networkPool)
-        averageText = " had average score is " + str(average) + " "
+        averageText = " Average score is " + str(average) + ". "
+        championTime = self.generation - champinGeneration + 1
+        championText = " Champion survived " + str(championTime) + " generations."
+        
 
         if (not isFloatScore or oneLineReport):
-            print(generationText + averageText + scoresText)
+            print(generationText + championText + averageText + scoresText)
         else :
-            print(generationText + averageText)
+            print(generationText + championText + averageText)
             print(scoresText)
 
 
@@ -144,22 +144,24 @@ configurationMountainCar = dict(
     outputs = 3,
     layers = [10, 6],
     firstGenerationNetworkCount = 250,
-    rounds = 1100,
-    childs = [5, 2, 1, 0, 0],
-    mutationCoeficient = [0.00012, 0.00005],
-    renderInterval = 10
+    rounds = 10000,
+    childs = [3 ,2 ,2 , 1, 0, 0, 0],
+    mutationCoeficient = [0.012, 0.003],
+    renderInterval = 10,
+    gamesInOneRound = 4
 )
 
 configurationCartPole = dict(
     gym = 'CartPole',
     inputs = 4,
     outputs = 2,
-    layers = [8],
+    layers = [8, 6],
     firstGenerationNetworkCount = 1000,
-    rounds = 1100,
+    rounds = 10000,
     childs = [3 ,2 ,2 , 1, 0, 0, 0],
-    mutationCoeficient = [0.0007, 0.0002],
-    renderInterval = 10
+    mutationCoeficient = [0.012, 0.003],
+    renderInterval = 10,
+    gamesInOneRound = 4
 )
 
 #neuralNetworkManager = NeuralNetworkManager(configurationMountainCar)
