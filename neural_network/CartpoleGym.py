@@ -8,7 +8,7 @@ class CartPoleGym:
     def close(self):
         self.env.close()
 
-    def play(self, network, maxRounds = 1000, logActions = False):
+    def play(self, network, maxRounds = 1000, render = False):
         #env = gym.make('CartPole-v1')
         env = self.env
         observation = env.reset()
@@ -16,7 +16,9 @@ class CartPoleGym:
         actionsLog = 'actions on 1st in generation: '
 
         for round in range(maxRounds):
-            env.render()
+            if render:
+                env.render()
+            
             #action = env.action_space.sample()
             action = network.evalToGetMax(observation)
             observation, reward, done, info = env.step(action)
@@ -25,10 +27,6 @@ class CartPoleGym:
             
             if done:
                 break
-                
-
-        if (logActions):
-            print(actionsLog)
 
         return totalReward
         

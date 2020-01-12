@@ -8,13 +8,15 @@ class MountainCarGym:
     def close(self):
         self.env.close()
 
-    def play(self, network, maxRounds = 1000, logActions = False):
+    def play(self, network, maxRounds = 1000, render = False):
         env = self.env
         observation = env.reset()
         maxPosition = -1
 
         for round in range(maxRounds):
-            env.render()
+            if render:
+                env.render()
+            
             #action = env.action_space.sample()
             action = network.evalToGetMax(observation)
             observation, reward, done, info = env.step(action)
